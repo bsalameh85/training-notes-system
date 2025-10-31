@@ -13,13 +13,15 @@
     <style>
         :root { --bs-primary: #0d6efd; --bs-secondary: #6c757d; --bs-success: #198754; --bs-danger: #dc3545; --bs-warning: #ffc107; --bs-info: #0dcaf0; }
         body { background-color: #f8f9fa; }
-        .navbar-brand { font-weight: bold; }
+        .navbar-brand { font-weight: bold; display: flex; align-items: center; }
+        .navbar-brand img { height: 30px; margin-left: 10px; }
         .dashboard-card { transition: transform 0.2s; }
         .dashboard-card:hover { transform: translateY(-5px); }
         .task-completed { opacity: 0.6; text-decoration: line-through; }
         .task-upcoming { background-color: #fff3cd; border-right: 5px solid var(--bs-warning); }
         .table-actions { white-space: nowrap; }
         .notification { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1080; }
+        .login-logo { display: block; margin: 0 auto 20px auto; max-width: 150px; max-height: 150px; }
     </style>
 </head>
 <body>
@@ -28,6 +30,7 @@
     <div id="login-screen" class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow-lg" style="width: 100%; max-width: 400px;">
             <div class="card-body p-4">
+                <img src="logo.png" alt="Logo" class="login-logo">
                 <h3 class="card-title text-center mb-4">تسجيل الدخول</h3>
                 <form id="login-form">
                     <div class="mb-3"><label for="login-email" class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="login-email" required></div>
@@ -42,7 +45,10 @@
     <div id="main-app" class="d-none">
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">نظام إدارة المسجلين</a>
+                <a class="navbar-brand" href="#">
+                    نظام إدارة المسجلين
+                    <img src="logo.png" alt="Logo">
+                </a>
                 <div class="d-flex"><button id="logout-btn" class="btn btn-outline-light">تسجيل الخروج <i class="bi bi-box-arrow-left"></i></button></div>
             </div>
         </nav>
@@ -58,8 +64,31 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل الملاحظة -->
-    <div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">تعديل الملاحظة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editForm"><div class="mb-3"><label for="editNotes" class="form-label">الملاحظة</label><textarea class="form-control" id="editNotes" rows="4" required></textarea></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-success" id="save-edit-btn">حفظ التعديل</button></div></div></div></div>
+    <!-- نافذة تعديل المسجل (محدثة) -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تعديل بيانات المسجل</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" class="row g-3">
+                        <div class="col-md-6"><label for="edit-name" class="form-label">الاسم الكامل</label><input type="text" class="form-control" id="edit-name" required></div>
+                        <div class="col-md-6"><label for="edit-phone" class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="edit-phone" required></div>
+                        <div class="col-md-6"><label for="edit-courseName" class="form-label">الدورة التدريبية</label><input type="text" class="form-control" id="edit-courseName" required></div>
+                        <div class="col-md-3"><label for="edit-registrationDate" class="form-label">تاريخ التسجيل</label><input type="date" class="form-control" id="edit-registrationDate" required></div>
+                        <div class="col-md-3"><label for="edit-taskDate" class="form-label">تاريخ إنجاز الملاحظة</label><input type="date" class="form-control" id="edit-taskDate"></div>
+                        <div class="col-12"><label for="edit-notes" class="form-label">ملاحظات التسجيل</label><textarea class="form-control" id="edit-notes" rows="3"></textarea></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success" id="save-edit-btn">حفظ التغييرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -68,11 +97,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-    // تعريف الدوال في النطاق العام حتى يتمكن HTML من الوصول إليها
+    // تعريف الدوال في النطاق العام
     let toggleComplete, openEditModal, deleteTrainee;
 
     document.addEventListener('DOMContentLoaded', () => {
-        // *** بيانات Firebase ***
         const firebaseConfig = {
           apiKey: "AIzaSyBao29SN4otllJSiczNwLDyUvvNmj-vpz8",
           authDomain: "future-353e4.firebaseapp.com",
@@ -82,7 +110,6 @@
           appId: "1:889060872247:web:abbb9ed520fd60adfbafb2",
           measurementId: "G-GJLG370D17"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
@@ -124,7 +151,7 @@
 
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => showNotification('تم تسجيل الخروج.')));
 
-        // تعريف تنفيذ الدوال هنا
+        // تعريف تنفيذ الدوال
         deleteTrainee = function(id) {
             if (confirm('هل أنت متأكد؟')) traineesRef.child(id).remove().catch(error => showNotification(error.message, 'danger'));
         };
@@ -133,26 +160,31 @@
             traineesRef.child(id).update({ isCompleted: isChecked }).catch(error => showNotification(error.message, 'danger'));
         };
 
-        openEditModal = function(id, notes) {
-            currentEditId = id;
-            document.getElementById('editNotes').value = notes;
+        openEditModal = function(traineeString) {
+            const trainee = JSON.parse(traineeString);
+            currentEditId = trainee.id;
+            document.getElementById('edit-name').value = trainee.name;
+            document.getElementById('edit-phone').value = trainee.phone;
+            document.getElementById('edit-courseName').value = trainee.courseName;
+            document.getElementById('edit-registrationDate').value = trainee.registrationDate;
+            document.getElementById('edit-taskDate').value = trainee.taskDate || '';
+            document.getElementById('edit-notes').value = trainee.notes || '';
             editModal.show();
         };
 
-        // بقية دوال التطبيق
         function displayTrainees() {
             traineesRef.orderByChild('timestamp').on('value', (snapshot) => {
                 allTrainees = []; traineesList.innerHTML = '';
                 let stats = { total: 0, completed: 0, pending: 0, upcoming: 0 };
                 snapshot.forEach(childSnapshot => {
-                    const trainee = childSnapshot.val(); const traineeId = childSnapshot.key;
-                    allTrainees.push({ id: traineeId, ...trainee });
+                    const trainee = { id: childSnapshot.key, ...childSnapshot.val() };
+                    allTrainees.push(trainee);
                     stats.total++; if (trainee.isCompleted) stats.completed++; else stats.pending++;
                     if (isDateUpcoming(trainee.taskDate)) stats.upcoming++;
                     const row = document.createElement('tr');
                     if (trainee.isCompleted) row.classList.add('task-completed');
                     else if (isDateUpcoming(trainee.taskDate)) row.classList.add('task-upcoming');
-                    row.innerHTML = `<td>${trainee.name}</td><td>${trainee.phone}</td><td>${trainee.courseName}</td><td>${trainee.registrationDate}</td><td>${trainee.taskDate || '---'}</td><td>${trainee.notes || 'لا توجد'}</td><td><input class="form-check-input" type="checkbox" ${trainee.isCompleted ? 'checked' : ''} onchange="toggleComplete('${traineeId}', this.checked)"></td><td class="table-actions"><button class="btn btn-sm btn-warning" onclick="openEditModal('${traineeId}', \`${trainee.notes.replace(/`/g, '\\`')}\`)"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-danger" onclick="deleteTrainee('${traineeId}')"><i class="bi bi-trash"></i></button></td>`;
+                    row.innerHTML = `<td>${trainee.name}</td><td>${trainee.phone}</td><td>${trainee.courseName}</td><td>${trainee.registrationDate}</td><td>${trainee.taskDate || '---'}</td><td>${trainee.notes || 'لا توجد'}</td><td><input class="form-check-input" type="checkbox" ${trainee.isCompleted ? 'checked' : ''} onchange="toggleComplete('${trainee.id}', this.checked)"></td><td class="table-actions"><button class="btn btn-sm btn-warning" onclick="openEditModal(\`${JSON.stringify(trainee).replace(/`/g, '\\`')}\`)"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-danger" onclick="deleteTrainee('${trainee.id}')"><i class="bi bi-trash"></i></button></td>`;
                     traineesList.appendChild(row);
                 });
                 updateDashboard(stats);
@@ -161,7 +193,22 @@
         function updateDashboard(stats) { document.getElementById('total-trainees').textContent = stats.total; document.getElementById('completed-tasks').textContent = stats.completed; document.getElementById('pending-tasks').textContent = stats.pending; document.getElementById('upcoming-tasks').textContent = stats.upcoming; }
         function isDateUpcoming(taskDateString) { if (!taskDateString) return false; const taskDate = new Date(taskDateString); const today = new Date(); today.setHours(0, 0, 0, 0); const twoDaysFromNow = new Date(today); twoDaysFromNow.setDate(today.getDate() + 2); return taskDate >= today && taskDate <= twoDaysFromNow; }
         document.getElementById('traineeForm').addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة بنجاح!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
-        saveEditBtn.addEventListener('click', () => { traineesRef.child(currentEditId).update({ notes: document.getElementById('editNotes').value }).then(() => { showNotification('تم التعديل!'); editModal.hide(); }).catch(error => showNotification(error.message, 'danger')); });
+        
+        saveEditBtn.addEventListener('click', () => {
+            const updatedTrainee = {
+                name: document.getElementById('edit-name').value,
+                phone: document.getElementById('edit-phone').value,
+                courseName: document.getElementById('edit-courseName').value,
+                registrationDate: document.getElementById('edit-registrationDate').value,
+                taskDate: document.getElementById('edit-taskDate').value,
+                notes: document.getElementById('edit-notes').value,
+            };
+            traineesRef.child(currentEditId).update(updatedTrainee).then(() => {
+                showNotification('تم تعديل البيانات بنجاح!');
+                editModal.hide();
+            }).catch(error => showNotification(error.message, 'danger'));
+        });
+
         document.getElementById('search-input').addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const rows = traineesList.getElementsByTagName('tr'); Array.from(rows).forEach(row => { const name = row.cells[0].textContent.toLowerCase(); const phone = row.cells[1].textContent.toLowerCase(); row.style.display = name.includes(searchTerm) || phone.includes(searchTerm) ? '' : 'none'; }); });
         document.getElementById('export-btn').addEventListener('click', () => { let csv = '\ufeffالاسم,رقم الجوال,الدورة,تاريخ التسجيل,تاريخ الملاحظة,الملاحظات,الحالة\n'; allTrainees.forEach(t => { csv += `"${t.name}","${t.phone}","${t.courseName}","${t.registrationDate}","${t.taskDate || ''}","${t.notes || ''}","${t.isCompleted ? 'منجزة' : 'معلقة'}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `trainees_${new Date().toISOString().slice(0, 10)}.csv`; link.click(); showNotification('تم تصدير الملف!'); });
     });
