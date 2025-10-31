@@ -22,7 +22,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 500px; /* أصغر قليلاً لشاشة الدخول */
+            max-width: 500px;
             margin: 50px auto;
             background-color: #fff;
             padding: 30px;
@@ -30,7 +30,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .container.main-app {
-            max-width: 1000px; /* حجم أكبر للتطبيق الرئيسي */
+            max-width: 1000px;
             margin: 20px auto;
         }
         h1, h2 {
@@ -233,7 +233,7 @@
 
     <!-- مكتبات Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
@@ -297,7 +297,6 @@
         });
 
         // 6. دوال المصادقة (Authentication)
-        // تسجيل الدخول
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = loginForm['login-email'].value;
@@ -307,7 +306,6 @@
                 .catch(error => showNotification(error.message, 'error'));
         });
 
-        // إنشاء حساب جديد
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = signupForm['signup-email'].value;
@@ -317,18 +315,14 @@
                 .catch(error => showNotification(error.message, 'error'));
         });
 
-        // تسجيل الخروج
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => showNotification('تم تسجيل الخروج.'));
         });
 
-        // التنقل بين شاشتي الدخول وإنشاء الحساب
         showSignupBtn.addEventListener('click', () => showScreen(signupScreen));
         showLoginBtn.addEventListener('click', () => showScreen(loginScreen));
 
-
-        // 7. دوال قاعدة البيانات (تبقى كما هي)
-        // إضافة مسجل جديد
+        // 7. دوال قاعدة البيانات
         traineeForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const newTrainee = {
@@ -347,7 +341,6 @@
                 .catch((error) => showNotification(error.message, 'error'));
         });
 
-        // عرض المسجلين
         function displayTrainees() {
             traineesList.innerHTML = '';
             const filterValue = dateFilter.value;
@@ -373,7 +366,6 @@
             });
         }
 
-        // حذف مسجل
         function deleteTrainee(id) {
             if (confirm('هل أنت متأكد من أنك تريد حذف هذا المسجل؟')) {
                 traineesRef.child(id).remove()
@@ -382,7 +374,6 @@
             }
         }
 
-        // فلترة حسب التاريخ
         dateFilter.addEventListener('change', displayTrainees);
     </script>
 </body>
