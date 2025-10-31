@@ -68,8 +68,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
+    // تعريف الدوال في النطاق العام حتى يتمكن HTML من الوصول إليها
+    let toggleComplete, openEditModal, deleteTrainee;
+
     document.addEventListener('DOMContentLoaded', () => {
-        // *** هام: تم وضع بيانات Firebase هنا ***
+        // *** بيانات Firebase ***
         const firebaseConfig = {
           apiKey: "AIzaSyBao29SN4otllJSiczNwLDyUvvNmj-vpz8",
           authDomain: "future-353e4.firebaseapp.com",
@@ -121,6 +124,21 @@
 
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => showNotification('تم تسجيل الخروج.')));
 
+        // تعريف تنفيذ الدوال هنا
+        deleteTrainee = function(id) {
+            if (confirm('هل أنت متأكد؟')) traineesRef.child(id).remove().catch(error => showNotification(error.message, 'danger'));
+        };
+
+        toggleComplete = function(id, isChecked) {
+            traineesRef.child(id).update({ isCompleted: isChecked }).catch(error => showNotification(error.message, 'danger'));
+        };
+
+        openEditModal = function(id, notes) {
+            currentEditId = id;
+            document.getElementById('editNotes').value = notes;
+            editModal.show();
+        };
+
         // بقية دوال التطبيق
         function displayTrainees() {
             traineesRef.orderByChild('timestamp').on('value', (snapshot) => {
@@ -143,9 +161,6 @@
         function updateDashboard(stats) { document.getElementById('total-trainees').textContent = stats.total; document.getElementById('completed-tasks').textContent = stats.completed; document.getElementById('pending-tasks').textContent = stats.pending; document.getElementById('upcoming-tasks').textContent = stats.upcoming; }
         function isDateUpcoming(taskDateString) { if (!taskDateString) return false; const taskDate = new Date(taskDateString); const today = new Date(); today.setHours(0, 0, 0, 0); const twoDaysFromNow = new Date(today); twoDaysFromNow.setDate(today.getDate() + 2); return taskDate >= today && taskDate <= twoDaysFromNow; }
         document.getElementById('traineeForm').addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة بنجاح!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
-        function deleteTrainee(id) { if (confirm('هل أنت متأكد؟')) traineesRef.child(id).remove().catch(error => showNotification(error.message, 'danger')); }
-        function toggleComplete(id, isChecked) { traineesRef.child(id).update({ isCompleted: isChecked }).catch(error => showNotification(error.message, 'danger')); }
-        function openEditModal(id, notes) { currentEditId = id; document.getElementById('editNotes').value = notes; editModal.show(); }
         saveEditBtn.addEventListener('click', () => { traineesRef.child(currentEditId).update({ notes: document.getElementById('editNotes').value }).then(() => { showNotification('تم التعديل!'); editModal.hide(); }).catch(error => showNotification(error.message, 'danger')); });
         document.getElementById('search-input').addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const rows = traineesList.getElementsByTagName('tr'); Array.from(rows).forEach(row => { const name = row.cells[0].textContent.toLowerCase(); const phone = row.cells[1].textContent.toLowerCase(); row.style.display = name.includes(searchTerm) || phone.includes(searchTerm) ? '' : 'none'; }); });
         document.getElementById('export-btn').addEventListener('click', () => { let csv = '\ufeffالاسم,رقم الجوال,الدورة,تاريخ التسجيل,تاريخ الملاحظة,الملاحظات,الحالة\n'; allTrainees.forEach(t => { csv += `"${t.name}","${t.phone}","${t.courseName}","${t.registrationDate}","${t.taskDate || ''}","${t.notes || ''}","${t.isCompleted ? 'منجزة' : 'معلقة'}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `trainees_${new Date().toISOString().slice(0, 10)}.csv`; link.click(); showNotification('تم تصدير الملف!'); });
