@@ -17,8 +17,6 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --sidebar-width: 260px;
-            /* تم تغيير اللون الأزرق إلى درجة أخف */
             --primary-color: #6f8ef7; 
             --secondary-color: #858796;
             --success-color: #1cc88a;
@@ -29,11 +27,8 @@
             --dark-color: #2c3e50;
         }
         body { font-family: 'Cairo', sans-serif; background-color: var(--light-color); }
-        .sidebar { position: fixed; top: 0; right: 0; height: 100vh; width: var(--sidebar-width); background: linear-gradient(180deg, var(--primary-color) 10%, #5a7fdb 100%); padding-top: 1rem; z-index: 100; transition: all 0.3s; }
-        .sidebar .sidebar-brand { color: white; font-weight: 700; font-size: 1.2rem; padding: 1rem 1.5rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        /* تم تكبير حجم الشعار في القائمة الجانبية */
-        .sidebar .sidebar-brand img { max-height: 60px; }
-        .content-wrapper { margin-right: var(--sidebar-width); min-height: 100vh; transition: all 0.3s; }
+        /* تم تعديل الـ content-wrapper ليملأ الشاشة */
+        .content-wrapper { margin-right: 0; min-height: 100vh; }
         .content { padding: 2rem; }
         .topbar { height: 65px; background-color: white; box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15); }
         .topbar .navbar-nav .nav-item .nav-link { color: var(--secondary-color); }
@@ -52,7 +47,6 @@
         #login-screen { background: linear-gradient(135deg, var(--primary-color) 0%, #5a7fdb 100%); }
         #login-screen .card { border: none; border-radius: 1rem; }
         #login-screen .card-body { padding: 3rem; }
-        /* تم تكبير حجم الشعار في شاشة الدخول */
         .login-logo { display: block; margin: 0 auto 2rem auto; max-width: 180px; }
         .modal-content { border: none; border-radius: 0.5rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); }
         .modal-header { border-bottom: 1px solid #e3e6f0; }
@@ -78,27 +72,26 @@
 
     <!-- التطبيق الرئيسي -->
     <div id="main-app" class="d-none">
-        <!-- القائمة الجانبية -->
-        <ul class="sidebar navbar-nav">
-            <li class="nav-item sidebar-brand d-flex align-items-center justify-content-center">
-                <img src="logo.png" alt="Logo">
-            </li>
-        </ul>
-
         <!-- المحتوى الرئيسي -->
         <div class="content-wrapper">
             <!-- الشريط العلوي -->
             <nav class="navbar navbar-expand topbar">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
-                            <li><a class="dropdown-item" href="#" id="logout-btn"><i class="bi bi-box-arrow-left"></i> تسجيل الخروج</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <div class="container-fluid">
+                    <a class="navbar-brand text-gray-800" href="#">
+                        <img src="logo.png" alt="Logo" style="height: 30px; margin-left: 10px;">
+                        نظام إدارة المسجلين
+                    </a>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+                                <li><a class="dropdown-item" href="#" id="logout-btn"><i class="bi bi-box-arrow-left"></i> تسجيل الخروج</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </nav>
 
             <!-- المحتوى -->
@@ -115,7 +108,7 @@
                         <div class="col-xl-3 col-md-6 mb-4"><div class="card dashboard-card border-left-warning shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-warning text-uppercase mb-1">مهام قادمة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="upcoming-tasks">0</div></div><div class="col-auto"><i class="bi bi-calendar-event-fill fa-2x text-gray-300"></i></div></div></div></div></div>
                     </div>
 
-                    <!-- نموذج إضافة مسجل جديد (تمت استعادته) -->
+                    <!-- نموذج إضافة مسجل جديد -->
                     <div class="card shadow mb-4">
                         <div class="card-header">
                             <h6 class="m-0 font-weight-bold text-primary">إضافة مسجل جديد</h6>
@@ -256,7 +249,6 @@
 
         function isDateUpcoming(taskDateString) { if (!taskDateString) return false; const taskDate = new Date(taskDateString); const today = new Date(); today.setHours(0, 0, 0, 0); const twoDaysFromNow = new Date(today); twoDaysFromNow.setDate(today.getDate() + 2); return taskDate >= today && taskDate <= twoDaysFromNow; }
         
-        // تم تصحيح معرف النموذج
         document.getElementById('traineeForm').addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
         saveEditBtn.addEventListener('click', () => { const updatedTrainee = { name: document.getElementById('edit-name').value, phone: document.getElementById('edit-phone').value, courseName: document.getElementById('edit-courseName').value, registrationDate: document.getElementById('edit-registrationDate').value, taskDate: document.getElementById('edit-taskDate').value, notes: document.getElementById('edit-notes').value, }; traineesRef.child(currentEditId).update(updatedTrainee).then(() => { showNotification('تم التعديل!'); editModal.hide(); }).catch(error => showNotification(error.message, 'danger')); });
         document.getElementById('search-input').addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const rows = traineesList.getElementsByTagName('tr'); Array.from(rows).forEach(row => { const name = row.cells[0].textContent.toLowerCase(); const phone = row.cells[1].textContent.toLowerCase(); row.style.display = name.includes(searchTerm) || phone.includes(searchTerm) ? '' : 'none'; }); });
