@@ -27,100 +27,37 @@
             --light-color: #f8f9fc;
             --dark-color: #2c3e50;
         }
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--light-color);
-        }
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-color) 10%, #2e59d9 100%);
-            padding-top: 1rem;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-        .sidebar .sidebar-brand {
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-            padding: 1rem 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--light-color); }
+        .sidebar { position: fixed; top: 0; right: 0; height: 100vh; width: var(--sidebar-width); background: linear-gradient(180deg, var(--primary-color) 10%, #2e59d9 100%); padding-top: 1rem; z-index: 100; transition: all 0.3s; }
+        .sidebar .sidebar-brand { color: white; font-weight: 700; font-size: 1.2rem; padding: 1rem 1.5rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar .sidebar-brand img { max-height: 40px; }
         .sidebar .nav-item { width: 100%; }
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 1rem 1.5rem;
-            font-weight: 400;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            color: white;
-            background-color: rgba(255,255,255,0.1);
-        }
+        .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 1rem 1.5rem; font-weight: 400; transition: all 0.3s; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: white; background-color: rgba(255,255,255,0.1); }
         .sidebar .nav-link i { margin-left: 0.5rem; }
-        
-        /* Main Content Area */
-        .content-wrapper {
-            margin-right: var(--sidebar-width);
-            min-height: 100vh;
-            transition: all 0.3s;
-        }
+        .content-wrapper { margin-right: var(--sidebar-width); min-height: 100vh; transition: all 0.3s; }
         .content { padding: 2rem; }
-        
-        /* Top Bar */
-        .topbar {
-            height: 65px;
-            background-color: white;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
-        }
+        .topbar { height: 65px; background-color: white; box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15); }
         .topbar .navbar-nav .nav-item .nav-link { color: var(--secondary-color); }
-        
-        /* Dashboard Cards */
-        .card {
-            border: none;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
-            margin-bottom: 1.5rem;
-            transition: all 0.2s;
-        }
+        .card { border: none; box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15); margin-bottom: 1.5rem; transition: all 0.2s; }
         .card:hover { transform: translateY(-3px); }
         .card .card-body { padding: 1.5rem; }
-        .card .card-header {
-            background-color: transparent;
-            border-bottom: 1px solid #e3e6f0;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
+        .card .card-header { background-color: transparent; border-bottom: 1px solid #e3e6f0; font-weight: 600; color: var(--dark-color); }
         .dashboard-card .card-body { padding: 1.25rem; }
         .dashboard-card .text-xs { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--secondary-color); }
         .dashboard-card .text-primary { color: var(--primary-color) !important; }
         .dashboard-card .text-success { color: var(--success-color) !important; }
         .dashboard-card .text-info { color: var(--info-color) !important; }
         .dashboard-card .text-warning { color: var(--warning-color) !important; }
-        
-        /* Table Styles */
         .table { color: var(--secondary-color); }
         .table thead th { border-bottom: 2px solid #e3e6f0; font-weight: 600; }
-        
-        /* Login Screen */
         #login-screen { background: linear-gradient(135deg, var(--primary-color) 0%, #2e59d9 100%); }
         #login-screen .card { border: none; border-radius: 1rem; }
         #login-screen .card-body { padding: 3rem; }
         .login-logo { display: block; margin: 0 auto 2rem auto; max-width: 120px; }
-        
-        /* Modals */
         .modal-content { border: none; border-radius: 0.5rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); }
         .modal-header { border-bottom: 1px solid #e3e6f0; }
-        
-        /* Notifications */
         .notification-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1050; }
-        
-        /* Chart Container */
         .chart-container { position: relative; height: 300px; width: 100%; }
     </style>
 </head>
@@ -183,52 +120,21 @@
                 <!-- عرض لوحة التحكم -->
                 <div id="dashboard-view" class="view-content">
                     <h1 class="h3 mb-4 text-gray-800">لوحة التحكم</h1>
-                    
-                    <!-- بطاقات الإحصائيات -->
                     <div class="row">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card dashboard-card border-left-primary shadow h-100 py-2">
-                                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">إجمالي المسجلين</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="total-trainees">0</div></div><div class="col-auto"><i class="bi bi-people-fill fa-2x text-gray-300"></i></div></div></div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card dashboard-card border-left-success shadow h-100 py-2">
-                                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-success text-uppercase mb-1">مهام منجزة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="completed-tasks">0</div></div><div class="col-auto"><i class="bi bi-clipboard-check-fill fa-2x text-gray-300"></i></div></div></div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card dashboard-card border-left-info shadow h-100 py-2">
-                                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">مهام معلقة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="pending-tasks">0</div></div><div class="col-auto"><i class="bi bi-hourglass-split fa-2x text-gray-300"></i></div></div></div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card dashboard-card border-left-warning shadow h-100 py-2">
-                                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-warning text-uppercase mb-1">مهام قادمة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="upcoming-tasks">0</div></div><div class="col-auto"><i class="bi bi-calendar-event-fill fa-2x text-gray-300"></i></div></div></div>
-                            </div>
-                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4"><div class="card dashboard-card border-left-primary shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">إجمالي المسجلين</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="total-trainees">0</div></div><div class="col-auto"><i class="bi bi-people-fill fa-2x text-gray-300"></i></div></div></div></div></div>
+                        <div class="col-xl-3 col-md-6 mb-4"><div class="card dashboard-card border-left-success shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-success text-uppercase mb-1">مهام منجزة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="completed-tasks">0</div></div><div class="col-auto"><i class="bi bi-clipboard-check-fill fa-2x text-gray-300"></i></div></div></div></div></div>
+                        <div class="col-xl-3 col-md-6 mb-4"><div class="card dashboard-card border-left-info shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-info text-uppercase mb-1">مهام معلقة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="pending-tasks">0</div></div><div class="col-auto"><i class="bi bi-hourglass-split fa-2x text-gray-300"></i></div></div></div></div></div>
+                        <div class="col-xl-3 col-md-6 mb-4"><div class="card dashboard-card border-left-warning shadow h-100 py-2"><div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-warning text-uppercase mb-1">مهام قادمة</div><div class="h5 mb-0 font-weight-bold text-gray-800" id="upcoming-tasks">0</div></div><div class="col-auto"><i class="bi bi-calendar-event-fill fa-2x text-gray-300"></i></div></div></div></div></div>
                     </div>
-
-                    <!-- الرسوم البيانية -->
                     <div class="row">
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"><h6 class="m-0 font-weight-bold text-primary">التسجيلات حسب الشهر</h6></div>
-                                <div class="card-body"><div class="chart-container"><canvas id="registrationsChart"></canvas></div></div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"><h6 class="m-0 font-weight-bold text-primary">توزيع المسجلين على الدورات</h6></div>
-                                <div class="card-body"><div class="chart-container"><canvas id="coursesChart"></canvas></div></div>
-                            </div>
-                        </div>
+                        <div class="col-xl-8 col-lg-7"><div class="card shadow mb-4"><div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"><h6 class="m-0 font-weight-bold text-primary">التسجيلات حسب الشهر</h6></div><div class="card-body"><div class="chart-container"><canvas id="registrationsChart"></canvas></div></div></div></div>
+                        <div class="col-xl-4 col-lg-5"><div class="card shadow mb-4"><div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"><h6 class="m-0 font-weight-bold text-primary">توزيع المسجلين على الدورات</h6></div><div class="card-body"><div class="chart-container"><canvas id="coursesChart"></canvas></div></div></div></div>
                     </div>
                 </div>
 
                 <!-- عرض إدارة المسجلين -->
                 <div id="trainees-view" class="view-content d-none">
                     <h1 class="h3 mb-4 text-gray-800">إدارة المسجلين</h1>
-                    
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">قائمة المسجلين</h6>
@@ -258,7 +164,18 @@
     let registrationsChart, coursesChart;
 
     document.addEventListener('DOMContentLoaded', () => {
-        const firebaseConfig = { /* ... بياناتك ... */ };
+        
+        // *** هام جداً: الصق بيانات firebaseConfig هنا بالكامل ***
+        const firebaseConfig = {
+          apiKey: "AIzaSyBao29SN4otllJSiczNwLDyUvvNmj-vpz8",
+          authDomain: "future-353e4.firebaseapp.com",
+          projectId: "future-353e4",
+          storageBucket: "future-353e4.firebasestorage.app",
+          messagingSenderId: "889060872247",
+          appId: "1:889060872247:web:abbb9ed520fd60adfbafb2",
+          measurementId: "G-GJLG370D17"
+        };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
@@ -300,7 +217,6 @@
 
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => showNotification('تم تسجيل الخروج.')));
 
-        // Navigation
         document.querySelectorAll('.sidebar .nav-link[data-view]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -331,18 +247,14 @@
                 let stats = { total: 0, completed: 0, pending: 0, upcoming: 0 };
                 const courseCounts = {};
                 const monthlyCounts = {};
-
                 snapshot.forEach(childSnapshot => {
                     const trainee = { id: childSnapshot.key, ...childSnapshot.val() };
                     allTrainees.push(trainee);
                     stats.total++; if (trainee.isCompleted) stats.completed++; else stats.pending++;
                     if (isDateUpcoming(trainee.taskDate)) stats.upcoming++;
-
-                    // Data for charts
                     courseCounts[trainee.courseName] = (courseCounts[trainee.courseName] || 0) + 1;
                     const month = new Date(trainee.registrationDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short' });
                     monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
-
                     const row = document.createElement('tr');
                     if (trainee.isCompleted) row.classList.add('task-completed');
                     else if (isDateUpcoming(trainee.taskDate)) row.classList.add('task-upcoming');
@@ -362,12 +274,9 @@
         }
 
         function updateCharts(courseCounts, monthlyCounts) {
-            // Update Courses Pie Chart
             const coursesCtx = document.getElementById('coursesChart').getContext('2d');
             if (coursesChart) coursesChart.destroy();
             coursesChart = new Chart(coursesCtx, { type: 'doughnut', data: { labels: Object.keys(courseCounts), datasets: [{ data: Object.values(courseCounts), backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'], hoverBorderColor: "rgba(234, 236, 244, 1)", }] }, options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
-
-            // Update Registrations Bar Chart
             const registrationsCtx = document.getElementById('registrationsChart').getContext('2d');
             if (registrationsChart) registrationsChart.destroy();
             registrationsChart = new Chart(registrationsCtx, { type: 'bar', data: { labels: Object.keys(monthlyCounts), datasets: [{ label: 'عدد المسجلين', data: Object.values(monthlyCounts), backgroundColor: 'rgba(78, 115, 223, 0.5)', borderColor: 'rgba(78, 115, 223, 1)', borderWidth: 1 }] }, options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
@@ -375,7 +284,7 @@
 
         function isDateUpcoming(taskDateString) { if (!taskDateString) return false; const taskDate = new Date(taskDateString); const today = new Date(); today.setHours(0, 0, 0, 0); const twoDaysFromNow = new Date(today); twoDaysFromNow.setDate(today.getDate() + 2); return taskDate >= today && taskDate <= twoDaysFromNow; }
         
-        document.getElementById('traineeForm').addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
+        document.getElementById('traineeForm')?.addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
         saveEditBtn.addEventListener('click', () => { const updatedTrainee = { name: document.getElementById('edit-name').value, phone: document.getElementById('edit-phone').value, courseName: document.getElementById('edit-courseName').value, registrationDate: document.getElementById('edit-registrationDate').value, taskDate: document.getElementById('edit-taskDate').value, notes: document.getElementById('edit-notes').value, }; traineesRef.child(currentEditId).update(updatedTrainee).then(() => { showNotification('تم التعديل!'); editModal.hide(); }).catch(error => showNotification(error.message, 'danger')); });
         document.getElementById('search-input').addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const rows = traineesList.getElementsByTagName('tr'); Array.from(rows).forEach(row => { const name = row.cells[0].textContent.toLowerCase(); const phone = row.cells[1].textContent.toLowerCase(); row.style.display = name.includes(searchTerm) || phone.includes(searchTerm) ? '' : 'none'; }); });
         document.getElementById('export-btn').addEventListener('click', () => { let csv = '\ufeffالاسم,رقم الجوال,الدورة,تاريخ التسجيل,تاريخ الملاحظة,الملاحظات,الحالة\n'; allTrainees.forEach(t => { csv += `"${t.name}","${t.phone}","${t.courseName}","${t.registrationDate}","${t.taskDate || ''}","${t.notes || ''}","${t.isCompleted ? 'منجزة' : 'معلقة'}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `trainees_${new Date().toISOString().slice(0, 10)}.csv`; link.click(); showNotification('تم التصدير!'); });
