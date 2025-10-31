@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة ملاحظات المسجلين</title>
+    <style>
+        /* تنسيقات CSS عامة */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #f8f9fa;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f7;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px; /* أصغر قليلاً لشاشة الدخول */
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .container.main-app {
+            max-width: 1000px; /* حجم أكبر للتطبيق الرئيسي */
+            margin: 20px auto;
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary { background-color: var(--primary-color); }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-danger { background-color: var(--danger-color); }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-success { background-color: var(--success-color); }
+        .btn-success:hover { background-color: #218838; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        /* تنسيقات الجدول */
+        .filter-section { margin-bottom: 20px; text-align: center; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th { background-color: var(--secondary-color); font-weight: bold; }
+        tr:hover { background-color: #f1f1f1; }
+        .actions { display: flex; gap: 10px; }
+        .actions button { padding: 5px 10px; font-size: 14px; }
+        
+        /* رسائل التنبيه */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 1000;
+        }
+        .notification.show { opacity: 1; }
+        .notification.error { background-color: var(--danger-color); }
+
+        /* إخفاء العناصر */
+        .hidden { display: none; }
+
+        /* زر تسجيل الخروج */
+        .auth-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة تسجيل الدخول وإنشاء الحساب -->
+    <div id="login-screen" class="container">
+        <h1>تسجيل الدخول</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">البريد الإلكتروني:</label>
+                <input type="email" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">كلمة المرور:</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="btn-primary">دخول</button>
+        </form>
+        <hr style="margin: 20px 0;">
+        <p style="text-align: center;">ليس لديك حساب؟</p>
+        <button id="show-signup-btn" class="btn-secondary">إنشاء حساب جديد</button>
+    </div>
+
+    <div id="signup-screen" class="container hidden">
+        <h1>إنشاء حساب جديد</h1>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="signup-email">البريد الإلكتروني:</label>
+                <input type="email" id="signup-email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">كلمة المرور:</label>
+                <input type="password" id="signup-password" required minlength="6">
+            </div>
+            <button type="submit" class="btn-success">إنشاء الحساب</button>
+        </form>
+        <hr style="margin: 20px 0;">
+        <p style="text-align: center;">لديك حساب بالفعل؟</p>
+        <button id="show-login-btn" class="btn-secondary">العودة لتسجيل الدخول</button>
+    </div>
+
+    <!-- التطبيق الرئيسي (يظهر بعد تسجيل الدخول) -->
+    <div id="main-app" class="container main-app hidden">
+        <div class="auth-buttons">
+            <button id="logout-btn" class="btn-danger">تسجيل الخروج</button>
+        </div>
+        <h1>نظام إدارة ملاحظات المسجلين في الدورات التدريبية</h1>
+
+        <!-- نموذج إضافة مسجل جديد -->
+        <section>
+            <h2>إضافة مسجل جديد</h2>
+            <form id="traineeForm">
+                <div class="form-group">
+                    <label for="name">الاسم الكامل:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الجوال:</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="courseName">اسم الدورة التدريبية:</label>
+                    <input type="text" id="courseName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registrationDate">تاريخ التسجيل:</label>
+                    <input type="date" id="registrationDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="notes">ملاحظات التسجيل:</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">إضافة مسجل</button>
+            </form>
+        </section>
+
+        <!-- قسم فلترة وعرض المسجلين -->
+        <section>
+            <h2>قائمة المسجلين</h2>
+            <div class="filter-section">
+                <label for="dateFilter">فلترة حسب تاريخ التسجيل:</label>
+                <input type="date" id="dateFilter">
+            </div>
+            <table id="traineesTable">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>رقم الجوال</th>
+                        <th>الدورة</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>الملاحظات</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="traineesList">
+                    <!-- سيتم إضافة المسجلين هنا ديناميكياً -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <!-- رسالة تنبيه -->
+    <div id="notification" class="notification"></div>
+
+    <!-- مكتبات Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // 1. إعداد الاتصال بـ Firebase
+        const firebaseConfig = {
+          apiKey: "AIzaSyBao29SN4otllJSiczNwLDyUvvNmj-vpz8",
+          authDomain: "future-353e4.firebaseapp.com",
+          projectId: "future-353e4",
+          storageBucket: "future-353e4.firebasestorage.app",
+          messagingSenderId: "889060872247",
+          appId: "1:889060872247:web:abbb9ed520fd60adfbafb2",
+          measurementId: "G-GJLG370D17"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const traineesRef = database.ref('trainees');
+
+        // 2. عناصر DOM
+        const loginScreen = document.getElementById('login-screen');
+        const signupScreen = document.getElementById('signup-screen');
+        const mainApp = document.getElementById('main-app');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const traineeForm = document.getElementById('traineeForm');
+        const traineesList = document.getElementById('traineesList');
+        const dateFilter = document.getElementById('dateFilter');
+        const notification = document.getElementById('notification');
+        const showSignupBtn = document.getElementById('show-signup-btn');
+        const showLoginBtn = document.getElementById('show-login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // 3. دوال المساعدة
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = 'notification show';
+            if (type === 'error') notification.classList.add('error');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 4. إدارة حالات الشاشات (الدخول / التطبيق الرئيسي)
+        function showScreen(screen) {
+            loginScreen.classList.add('hidden');
+            signupScreen.classList.add('hidden');
+            mainApp.classList.add('hidden');
+            screen.classList.remove('hidden');
+        }
+
+        // 5. مراقبة حالة المستخدم (هل هو مسجل دخول أم لا؟)
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // المستخدم مسجل دخول
+                showScreen(mainApp);
+                displayTrainees(); // تحميل البيانات عند الدخول
+            } else {
+                // المستخدم غير مسجل دخول
+                showScreen(loginScreen);
+            }
+        });
+
+        // 6. دوال المصادقة (Authentication)
+        // تسجيل الدخول
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = loginForm['login-email'].value;
+            const password = loginForm['login-password'].value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => showNotification('تم تسجيل الدخول بنجاح!'))
+                .catch(error => showNotification(error.message, 'error'));
+        });
+
+        // إنشاء حساب جديد
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = signupForm['signup-email'].value;
+            const password = signupForm['signup-password'].value;
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(() => showNotification('تم إنشاء الحساب بنجاح!'))
+                .catch(error => showNotification(error.message, 'error'));
+        });
+
+        // تسجيل الخروج
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => showNotification('تم تسجيل الخروج.'));
+        });
+
+        // التنقل بين شاشتي الدخول وإنشاء الحساب
+        showSignupBtn.addEventListener('click', () => showScreen(signupScreen));
+        showLoginBtn.addEventListener('click', () => showScreen(loginScreen));
+
+
+        // 7. دوال قاعدة البيانات (تبقى كما هي)
+        // إضافة مسجل جديد
+        traineeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newTrainee = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                courseName: document.getElementById('courseName').value,
+                registrationDate: document.getElementById('registrationDate').value,
+                notes: document.getElementById('notes').value,
+                timestamp: Date.now()
+            };
+            traineesRef.push(newTrainee)
+                .then(() => {
+                    showNotification('تمت إضافة المسجل بنجاح!');
+                    traineeForm.reset();
+                })
+                .catch((error) => showNotification(error.message, 'error'));
+        });
+
+        // عرض المسجلين
+        function displayTrainees() {
+            traineesList.innerHTML = '';
+            const filterValue = dateFilter.value;
+            traineesRef.orderByChild('timestamp').on('value', (snapshot) => {
+                traineesList.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const trainee = childSnapshot.val();
+                    const traineeId = childSnapshot.key;
+                    if (filterValue && trainee.registrationDate !== filterValue) return;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${trainee.name}</td>
+                        <td>${trainee.phone}</td>
+                        <td>${trainee.courseName}</td>
+                        <td>${trainee.registrationDate}</td>
+                        <td>${trainee.notes || 'لا توجد ملاحظات'}</td>
+                        <td class="actions">
+                            <button class="btn-danger" onclick="deleteTrainee('${traineeId}')">حذف</button>
+                        </td>
+                    `;
+                    traineesList.appendChild(row);
+                });
+            });
+        }
+
+        // حذف مسجل
+        function deleteTrainee(id) {
+            if (confirm('هل أنت متأكد من أنك تريد حذف هذا المسجل؟')) {
+                traineesRef.child(id).remove()
+                    .then(() => showNotification('تم حذف المسجل بنجاح.'))
+                    .catch((error) => showNotification(error.message, 'error'));
+            }
+        }
+
+        // فلترة حسب التاريخ
+        dateFilter.addEventListener('change', displayTrainees);
+    </script>
+</body>
+</html>
