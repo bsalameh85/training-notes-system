@@ -27,7 +27,6 @@
             --dark-color: #2c3e50;
         }
         body { font-family: 'Cairo', sans-serif; background-color: var(--light-color); }
-        /* تم تعديل الـ content-wrapper ليملأ الشاشة */
         .content-wrapper { margin-right: 0; min-height: 100vh; }
         .content { padding: 2rem; }
         .topbar { height: 65px; background-color: white; box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15); }
@@ -44,8 +43,9 @@
         .dashboard-card .text-warning { color: var(--warning-color) !important; }
         .table { color: var(--secondary-color); }
         .table thead th { border-bottom: 2px solid #e3e6f0; font-weight: 600; }
-        #login-screen { background: linear-gradient(135deg, var(--primary-color) 0%, #5a7fdb 100%); }
-        #login-screen .card { border: none; border-radius: 1rem; }
+        /* تم تغيير خلفية شاشة الدخول إلى الأبيض */
+        #login-screen { background-color: #ffffff; }
+        #login-screen .card { border: none; border-radius: 1rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); }
         #login-screen .card-body { padding: 3rem; }
         .login-logo { display: block; margin: 0 auto 2rem auto; max-width: 180px; }
         .modal-content { border: none; border-radius: 0.5rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); }
@@ -76,21 +76,15 @@
         <div class="content-wrapper">
             <!-- الشريط العلوي -->
             <nav class="navbar navbar-expand topbar">
-                <div class="container-fluid">
+                <div class="container-fluid d-flex justify-content-between align-items-center">
                     <a class="navbar-brand text-gray-800" href="#">
                         <img src="logo.png" alt="Logo" style="height: 30px; margin-left: 10px;">
                         نظام إدارة المسجلين
                     </a>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
-                                <li><a class="dropdown-item" href="#" id="logout-btn"><i class="bi bi-box-arrow-left"></i> تسجيل الخروج</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <!-- زر تسجيل الخروج المباشر -->
+                    <button id="logout-btn" class="btn btn-danger">
+                        <i class="bi bi-box-arrow-left"></i> تسجيل الخروج
+                    </button>
                 </div>
             </nav>
 
