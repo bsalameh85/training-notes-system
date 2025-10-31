@@ -11,6 +11,7 @@
             --secondary-color: #f8f9fa;
             --danger-color: #dc3545;
             --success-color: #28a745;
+            --warning-color: #ffc107; /* لون للتحذير */
             --text-color: #333;
             --border-color: #ddd;
         }
@@ -30,7 +31,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .container.main-app {
-            max-width: 1000px;
+            max-width: 1200px; /* زيادة العرض للأعمدة الجديدة */
             margin: 20px auto;
         }
         h1, h2 {
@@ -82,6 +83,8 @@
         .btn-success:hover { background-color: #218838; }
         .btn-secondary { background-color: #6c757d; }
         .btn-secondary:hover { background-color: #5a6268; }
+        .btn-warning { background-color: var(--warning-color); color: #333; }
+        .btn-warning:hover { background-color: #e0a800; }
 
         /* تنسيقات الجدول */
         .filter-section { margin-bottom: 20px; text-align: center; }
@@ -99,6 +102,50 @@
         tr:hover { background-color: #f1f1f1; }
         .actions { display: flex; gap: 10px; }
         .actions button { padding: 5px 10px; font-size: 14px; }
+        
+        /* تنسيقات الحالات */
+        .task-completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        .task-upcoming {
+            background-color: #fff3cd; /* خلفية صفراء باهتة */
+            border-right: 5px solid var(--warning-color);
+        }
+
+        /* تنسيقات النافذة المنبثقة (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
         
         /* رسائل التنبيه */
         .notification {
@@ -147,7 +194,7 @@
         </form>
     </div>
 
-    <!-- التطبيق الرئيسي (يظهر بعد تسجيل الدخول) -->
+    <!-- التطبيق الرئيسي -->
     <div id="main-app" class="container main-app hidden">
         <div class="auth-buttons">
             <button id="logout-btn" class="btn-danger">تسجيل الخروج</button>
@@ -175,6 +222,10 @@
                     <input type="date" id="registrationDate" required>
                 </div>
                 <div class="form-group">
+                    <label for="taskDate">تاريخ إنجاز الملاحظة (اختياري):</label>
+                    <input type="date" id="taskDate">
+                </div>
+                <div class="form-group">
                     <label for="notes">ملاحظات التسجيل:</label>
                     <textarea id="notes" rows="3"></textarea>
                 </div>
@@ -196,7 +247,9 @@
                         <th>رقم الجوال</th>
                         <th>الدورة</th>
                         <th>تاريخ التسجيل</th>
+                        <th>تاريخ الملاحظة</th>
                         <th>الملاحظات</th>
+                        <th>الحالة</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
@@ -205,6 +258,21 @@
                 </tbody>
             </table>
         </section>
+    </div>
+
+    <!-- النافذة المنبثقة لتعديل الملاحظة -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>تعديل الملاحظة</h2>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editNotes">الملاحظة:</label>
+                    <textarea id="editNotes" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn-success">حفظ التعديل</button>
+            </form>
+        </div>
     </div>
 
     <!-- رسالة تنبيه -->
@@ -241,53 +309,63 @@
         const notification = document.getElementById('notification');
         const logoutBtn = document.getElementById('logout-btn');
 
+        // عناصر النافذة المنبثقة
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const editNotesTextarea = document.getElementById('editNotes');
+        const closeModalBtn = document.getElementsByClassName("close")[0];
+
+        let currentEditId = null; // لتخزين معرف الملاحظة التي يتم تعديلها
+
         // 3. دوال المساعدة
         function showNotification(message, type = 'success') {
             notification.textContent = message;
             notification.className = 'notification show';
             if (type === 'error') notification.classList.add('error');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
-        // 4. إدارة حالات الشاشات (الدخول / التطبيق الرئيسي)
         function showScreen(screen) {
             loginScreen.classList.add('hidden');
             mainApp.classList.add('hidden');
             screen.classList.remove('hidden');
         }
+        
+        // دالة للتحقق مما إذا كان التاريخ قريباً
+        function isDateUpcoming(taskDateString) {
+            if (!taskDateString) return false;
+            const taskDate = new Date(taskDateString);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // تجاهل الوقت
+            const twoDaysFromNow = new Date(today);
+            twoDaysFromNow.setDate(today.getDate() + 2);
+            
+            return taskDate >= today && taskDate <= twoDaysFromNow;
+        }
 
-        // 5. مراقبة حالة المستخدم (هل هو مسجل دخول أم لا؟)
+        // 4. مراقبة حالة المستخدم
         auth.onAuthStateChanged(user => {
             if (user) {
-                // المستخدم مسجل دخول
                 showScreen(mainApp);
-                displayTrainees(); // تحميل البيانات عند الدخول
+                displayTrainees();
             } else {
-                // المستخدم غير مسجل دخول
                 showScreen(loginScreen);
             }
         });
 
-        // 6. دوال المصادقة (تسجيل الدخول فقط)
+        // 5. دوال المصادقة
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = loginForm['login-email'].value;
             const password = loginForm['login-password'].value;
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => showNotification('مرحباً بك! تم تسجيل الدخول بنجاح.'))
-                .catch(error => {
-                    console.error("Login error:", error);
-                    showNotification('فشل تسجيل الدخول: ' + error.message, 'error');
-                });
+                .catch(error => showNotification('فشل تسجيل الدخول: ' + error.message, 'error'));
         });
 
-        logoutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => showNotification('تم تسجيل الخروج بنجاح.'));
-        });
+        logoutBtn.addEventListener('click', () => auth.signOut().then(() => showNotification('تم تسجيل الخروج بنجاح.')));
 
-        // 7. دوال قاعدة البيانات
+        // 6. دوال قاعدة البيانات
         traineeForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const newTrainee = {
@@ -295,7 +373,9 @@
                 phone: document.getElementById('phone').value,
                 courseName: document.getElementById('courseName').value,
                 registrationDate: document.getElementById('registrationDate').value,
+                taskDate: document.getElementById('taskDate').value, // حقل جديد
                 notes: document.getElementById('notes').value,
+                isCompleted: false, // حالة افتراضية
                 timestamp: Date.now()
             };
             traineesRef.push(newTrainee)
@@ -315,14 +395,26 @@
                     const trainee = childSnapshot.val();
                     const traineeId = childSnapshot.key;
                     if (filterValue && trainee.registrationDate !== filterValue) return;
+
                     const row = document.createElement('tr');
+                    
+                    // إضافة الكلاسات بناءً على الحالة
+                    if (trainee.isCompleted) {
+                        row.classList.add('task-completed');
+                    } else if (isDateUpcoming(trainee.taskDate)) {
+                        row.classList.add('task-upcoming');
+                    }
+
                     row.innerHTML = `
                         <td>${trainee.name}</td>
                         <td>${trainee.phone}</td>
                         <td>${trainee.courseName}</td>
                         <td>${trainee.registrationDate}</td>
+                        <td>${trainee.taskDate || '---'}</td>
                         <td>${trainee.notes || 'لا توجد ملاحظات'}</td>
+                        <td><input type="checkbox" ${trainee.isCompleted ? 'checked' : ''} onchange="toggleComplete('${traineeId}', this.checked)"></td>
                         <td class="actions">
+                            <button class="btn-warning" onclick="openEditModal('${traineeId}', '${trainee.notes.replace(/'/g, "\\'")}')">تعديل</button>
                             <button class="btn-danger" onclick="deleteTrainee('${traineeId}')">حذف</button>
                         </td>
                     `;
@@ -338,6 +430,37 @@
                     .catch((error) => showNotification(error.message, 'error'));
             }
         }
+
+        function toggleComplete(id, isChecked) {
+            traineesRef.child(id).update({ isCompleted: isChecked })
+                .then(() => showNotification(isChecked ? 'تم تحديد الملاحظة كمنجزة.' : 'تم إلغاء تحديد الملاحظة.'))
+                .catch((error) => showNotification(error.message, 'error'));
+        }
+
+        function openEditModal(id, notes) {
+            currentEditId = id;
+            editNotesTextarea.value = notes;
+            editModal.style.display = 'block';
+        }
+
+        // 7. أحداث النافذة المنبثقة
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const updatedNotes = editNotesTextarea.value;
+            traineesRef.child(currentEditId).update({ notes: updatedNotes })
+                .then(() => {
+                    showNotification('تم تعديل الملاحظة بنجاح.');
+                    editModal.style.display = 'none';
+                })
+                .catch((error) => showNotification(error.message, 'error'));
+        });
+
+        closeModalBtn.onclick = () => editModal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target == editModal) {
+                editModal.style.display = 'none';
+            }
+        };
 
         dateFilter.addEventListener('change', displayTrainees);
     </script>
