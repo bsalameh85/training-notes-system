@@ -11,44 +11,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <style>
-        :root {
-            --bs-primary: #0d6efd;
-            --bs-secondary: #6c757d;
-            --bs-success: #198754;
-            --bs-danger: #dc3545;
-            --bs-warning: #ffc107;
-            --bs-info: #0dcaf0;
-        }
-        body {
-            background-color: #f8f9fa;
-        }
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .dashboard-card {
-            transition: transform 0.2s;
-        }
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-        }
-        .task-completed {
-            opacity: 0.6;
-            text-decoration: line-through;
-        }
-        .task-upcoming {
-            background-color: #fff3cd;
-            border-right: 5px solid var(--bs-warning);
-        }
-        .table-actions {
-            white-space: nowrap;
-        }
-        .notification {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1080;
-        }
+        :root { --bs-primary: #0d6efd; --bs-secondary: #6c757d; --bs-success: #198754; --bs-danger: #dc3545; --bs-warning: #ffc107; --bs-info: #0dcaf0; }
+        body { background-color: #f8f9fa; }
+        .navbar-brand { font-weight: bold; }
+        .dashboard-card { transition: transform 0.2s; }
+        .dashboard-card:hover { transform: translateY(-5px); }
+        .task-completed { opacity: 0.6; text-decoration: line-through; }
+        .task-upcoming { background-color: #fff3cd; border-right: 5px solid var(--bs-warning); }
+        .table-actions { white-space: nowrap; }
+        .notification { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1080; }
     </style>
 </head>
 <body>
@@ -59,14 +30,8 @@
             <div class="card-body p-4">
                 <h3 class="card-title text-center mb-4">تسجيل الدخول</h3>
                 <form id="login-form">
-                    <div class="mb-3">
-                        <label for="login-email" class="form-label">البريد الإلكتروني</label>
-                        <input type="email" class="form-control" id="login-email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="login-password" class="form-label">كلمة المرور</label>
-                        <input type="password" class="form-control" id="login-password" required>
-                    </div>
+                    <div class="mb-3"><label for="login-email" class="form-label">البريد الإلكتروني</label><input type="email" class="form-control" id="login-email" required></div>
+                    <div class="mb-3"><label for="login-password" class="form-label">كلمة المرور</label><input type="password" class="form-control" id="login-password" required></div>
                     <button type="submit" class="btn btn-primary w-100">دخول</button>
                 </form>
             </div>
@@ -75,104 +40,26 @@
 
     <!-- التطبيق الرئيسي (مخفي افتراضياً) -->
     <div id="main-app" class="d-none">
-        <!-- شريط التنقل العلوي -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">نظام إدارة المسجلين</a>
-                <div class="d-flex">
-                    <button id="logout-btn" class="btn btn-outline-light">تسجيل الخروج <i class="bi bi-box-arrow-left"></i></button>
-                </div>
+                <div class="d-flex"><button id="logout-btn" class="btn btn-outline-light">تسجيل الخروج <i class="bi bi-box-arrow-left"></i></button></div>
             </div>
         </nav>
-
         <div class="container-fluid mt-4">
-            <!-- لوحة التحكم -->
             <div id="dashboard-view" class="row mb-4">
-                <div class="col-md-3 mb-3">
-                    <div class="card dashboard-card text-center h-100">
-                        <div class="card-body">
-                            <i class="bi bi-people-fill display-4 text-primary"></i>
-                            <h5 class="card-title mt-2">إجمالي المسجلين</h5>
-                            <p class="card-text fs-2" id="total-trainees">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card dashboard-card text-center h-100">
-                        <div class="card-body">
-                            <i class="bi bi-clipboard-check-fill display-4 text-success"></i>
-                            <h5 class="card-title mt-2">مهام منجزة</h5>
-                            <p class="card-text fs-2" id="completed-tasks">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card dashboard-card text-center h-100">
-                        <div class="card-body">
-                            <i class="bi bi-hourglass-split display-4 text-warning"></i>
-                            <h5 class="card-title mt-2">مهام معلقة</h5>
-                            <p class="card-text fs-2" id="pending-tasks">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card dashboard-card text-center h-100">
-                        <div class="card-body">
-                            <i class="bi bi-calendar-event-fill display-4 text-info"></i>
-                            <h5 class="card-title mt-2">مهام قادمة</h5>
-                            <p class="card-text fs-2" id="upcoming-tasks">0</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="col-md-3 mb-3"><div class="card dashboard-card text-center h-100"><div class="card-body"><i class="bi bi-people-fill display-4 text-primary"></i><h5 class="card-title mt-2">إجمالي المسجلين</h5><p class="card-text fs-2" id="total-trainees">0</p></div></div></div>
+                <div class="col-md-3 mb-3"><div class="card dashboard-card text-center h-100"><div class="card-body"><i class="bi bi-clipboard-check-fill display-4 text-success"></i><h5 class="card-title mt-2">مهام منجزة</h5><p class="card-text fs-2" id="completed-tasks">0</p></div></div></div>
+                <div class="col-md-3 mb-3"><div class="card dashboard-card text-center h-100"><div class="card-body"><i class="bi bi-hourglass-split display-4 text-warning"></i><h5 class="card-title mt-2">مهام معلقة</h5><p class="card-text fs-2" id="pending-tasks">0</p></div></div></div>
+                <div class="col-md-3 mb-3"><div class="card dashboard-card text-center h-100"><div class="card-body"><i class="bi bi-calendar-event-fill display-4 text-info"></i><h5 class="card-title mt-2">مهام قادمة</h5><p class="card-text fs-2" id="upcoming-tasks">0</p></div></div></div>
             </div>
-
-            <!-- قسم الإضافة والبحث -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h4 class="mb-0">إضافة مسجل جديد</h4>
-                </div>
-                <div class="card-body">
-                    <form id="traineeForm" class="row g-3">
-                        <div class="col-md-6"><label for="name" class="form-label">الاسم الكامل</label><input type="text" class="form-control" id="name" required></div>
-                        <div class="col-md-6"><label for="phone" class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="phone" required></div>
-                        <div class="col-md-6"><label for="courseName" class="form-label">الدورة التدريبية</label><input type="text" class="form-control" id="courseName" required></div>
-                        <div class="col-md-3"><label for="registrationDate" class="form-label">تاريخ التسجيل</label><input type="date" class="form-control" id="registrationDate" required></div>
-                        <div class="col-md-3"><label for="taskDate" class="form-label">تاريخ إنجاز الملاحظة</label><input type="date" class="form-control" id="taskDate"></div>
-                        <div class="col-12"><label for="notes" class="form-label">ملاحظات التسجيل</label><textarea class="form-control" id="notes" rows="2"></textarea></div>
-                        <div class="col-12"><button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i> إضافة مسجل</button></div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- قسم عرض البيانات -->
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">قائمة المسجلين</h4>
-                    <div>
-                        <input type="text" class="form-control d-inline-block w-auto ms-2" id="search-input" placeholder="بحث بالاسم أو الجوال...">
-                        <button id="export-btn" class="btn btn-success"><i class="bi bi-download"></i> تصدير CSV</button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light"><tr><th>الاسم</th><th>رقم الجوال</th><th>الدورة</th><th>تاريخ التسجيل</th><th>تاريخ الملاحظة</th><th>الملاحظات</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-                            <tbody id="traineesList"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <div class="card shadow-sm mb-4"><div class="card-header"><h4 class="mb-0">إضافة مسجل جديد</h4></div><div class="card-body"><form id="traineeForm" class="row g-3"><div class="col-md-6"><label for="name" class="form-label">الاسم الكامل</label><input type="text" class="form-control" id="name" required></div><div class="col-md-6"><label for="phone" class="form-label">رقم الجوال</label><input type="tel" class="form-control" id="phone" required></div><div class="col-md-6"><label for="courseName" class="form-label">الدورة التدريبية</label><input type="text" class="form-control" id="courseName" required></div><div class="col-md-3"><label for="registrationDate" class="form-label">تاريخ التسجيل</label><input type="date" class="form-control" id="registrationDate" required></div><div class="col-md-3"><label for="taskDate" class="form-label">تاريخ إنجاز الملاحظة</label><input type="date" class="form-control" id="taskDate"></div><div class="col-12"><label for="notes" class="form-label">ملاحظات التسجيل</label><textarea class="form-control" id="notes" rows="2"></textarea></div><div class="col-12"><button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i> إضافة مسجل</button></div></form></div></div>
+            <div class="card shadow-sm"><div class="card-header d-flex justify-content-between align-items-center"><h4 class="mb-0">قائمة المسجلين</h4><div><input type="text" class="form-control d-inline-block w-auto ms-2" id="search-input" placeholder="بحث بالاسم أو الجوال..."><button id="export-btn" class="btn btn-success"><i class="bi bi-download"></i> تصدير CSV</button></div></div><div class="card-body"><div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>الاسم</th><th>رقم الجوال</th><th>الدورة</th><th>تاريخ التسجيل</th><th>تاريخ الملاحظة</th><th>الملاحظات</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="traineesList"></tbody></table></div></div></div>
         </div>
     </div>
 
     <!-- نافذة تعديل الملاحظة -->
-    <div class="modal fade" id="editModal" tabindex="-1">
-        <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">تعديل الملاحظة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body"><form id="editForm"><div class="mb-3"><label for="editNotes" class="form-label">الملاحظة</label><textarea class="form-control" id="editNotes" rows="4" required></textarea></div></form></div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-success" id="save-edit-btn">حفظ التعديل</button></div>
-        </div></div>
-    </div>
+    <div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">تعديل الملاحظة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editForm"><div class="mb-3"><label for="editNotes" class="form-label">الملاحظة</label><textarea class="form-control" id="editNotes" rows="4" required></textarea></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button><button type="button" class="btn btn-success" id="save-edit-btn">حفظ التعديل</button></div></div></div></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -182,9 +69,17 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("DOM fully loaded. Initializing app...");
+        // *** هام: تم وضع بيانات Firebase هنا ***
+        const firebaseConfig = {
+          apiKey: "AIzaSyBao29SN4otllJSiczNwLDyUvvNmj-vpz8",
+          authDomain: "future-353e4.firebaseapp.com",
+          projectId: "future-353e4",
+          storageBucket: "future-353e4.firebasestorage.app",
+          messagingSenderId: "889060872247",
+          appId: "1:889060872247:web:abbb9ed520fd60adfbafb2",
+          measurementId: "G-GJLG370D17"
+        };
 
-        const firebaseConfig = { /* ... بياناتك ... */ };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
@@ -208,26 +103,13 @@
         }
 
         function showScreen(screenName) {
-            console.log(`Switching to screen: ${screenName}`);
-            if (screenName === 'main') {
-                loginScreen.classList.add('d-none');
-                mainApp.classList.remove('d-none');
-            } else {
-                loginScreen.classList.remove('d-none');
-                mainApp.classList.add('d-none');
-            }
+            if (screenName === 'main') { loginScreen.classList.add('d-none'); mainApp.classList.remove('d-none'); }
+            else { loginScreen.classList.remove('d-none'); mainApp.classList.add('d-none'); }
         }
 
         auth.onAuthStateChanged(user => {
-            console.log("Auth state changed. User:", user);
-            if (user) {
-                console.log("User is logged in. Showing main app.");
-                showScreen('main');
-                displayTrainees();
-            } else {
-                console.log("User is logged out. Showing login screen.");
-                showScreen('login');
-            }
+            if (user) { showScreen('main'); displayTrainees(); }
+            else { showScreen('login'); }
         });
 
         loginForm.addEventListener('submit', (e) => {
@@ -239,10 +121,34 @@
 
         logoutBtn.addEventListener('click', () => auth.signOut().then(() => showNotification('تم تسجيل الخروج.')));
 
-        // بقية الكود (إضافة، تعديل، حذف، بحث، تصدير) يبقى كما هو...
-        function displayTrainees() { /* ... */ }
-        function updateDashboard(stats) { /* ... */ }
-        // ... وهكذا لبقية الدوال
+        // بقية دوال التطبيق
+        function displayTrainees() {
+            traineesRef.orderByChild('timestamp').on('value', (snapshot) => {
+                allTrainees = []; traineesList.innerHTML = '';
+                let stats = { total: 0, completed: 0, pending: 0, upcoming: 0 };
+                snapshot.forEach(childSnapshot => {
+                    const trainee = childSnapshot.val(); const traineeId = childSnapshot.key;
+                    allTrainees.push({ id: traineeId, ...trainee });
+                    stats.total++; if (trainee.isCompleted) stats.completed++; else stats.pending++;
+                    if (isDateUpcoming(trainee.taskDate)) stats.upcoming++;
+                    const row = document.createElement('tr');
+                    if (trainee.isCompleted) row.classList.add('task-completed');
+                    else if (isDateUpcoming(trainee.taskDate)) row.classList.add('task-upcoming');
+                    row.innerHTML = `<td>${trainee.name}</td><td>${trainee.phone}</td><td>${trainee.courseName}</td><td>${trainee.registrationDate}</td><td>${trainee.taskDate || '---'}</td><td>${trainee.notes || 'لا توجد'}</td><td><input class="form-check-input" type="checkbox" ${trainee.isCompleted ? 'checked' : ''} onchange="toggleComplete('${traineeId}', this.checked)"></td><td class="table-actions"><button class="btn btn-sm btn-warning" onclick="openEditModal('${traineeId}', \`${trainee.notes.replace(/`/g, '\\`')}\`)"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-danger" onclick="deleteTrainee('${traineeId}')"><i class="bi bi-trash"></i></button></td>`;
+                    traineesList.appendChild(row);
+                });
+                updateDashboard(stats);
+            });
+        }
+        function updateDashboard(stats) { document.getElementById('total-trainees').textContent = stats.total; document.getElementById('completed-tasks').textContent = stats.completed; document.getElementById('pending-tasks').textContent = stats.pending; document.getElementById('upcoming-tasks').textContent = stats.upcoming; }
+        function isDateUpcoming(taskDateString) { if (!taskDateString) return false; const taskDate = new Date(taskDateString); const today = new Date(); today.setHours(0, 0, 0, 0); const twoDaysFromNow = new Date(today); twoDaysFromNow.setDate(today.getDate() + 2); return taskDate >= today && taskDate <= twoDaysFromNow; }
+        document.getElementById('traineeForm').addEventListener('submit', (e) => { e.preventDefault(); const newTrainee = { name: document.getElementById('name').value, phone: document.getElementById('phone').value, courseName: document.getElementById('courseName').value, registrationDate: document.getElementById('registrationDate').value, taskDate: document.getElementById('taskDate').value, notes: document.getElementById('notes').value, isCompleted: false, timestamp: Date.now() }; traineesRef.push(newTrainee).then(() => { showNotification('تمت الإضافة بنجاح!'); document.getElementById('traineeForm').reset(); }).catch(error => showNotification(error.message, 'danger')); });
+        function deleteTrainee(id) { if (confirm('هل أنت متأكد؟')) traineesRef.child(id).remove().catch(error => showNotification(error.message, 'danger')); }
+        function toggleComplete(id, isChecked) { traineesRef.child(id).update({ isCompleted: isChecked }).catch(error => showNotification(error.message, 'danger')); }
+        function openEditModal(id, notes) { currentEditId = id; document.getElementById('editNotes').value = notes; editModal.show(); }
+        saveEditBtn.addEventListener('click', () => { traineesRef.child(currentEditId).update({ notes: document.getElementById('editNotes').value }).then(() => { showNotification('تم التعديل!'); editModal.hide(); }).catch(error => showNotification(error.message, 'danger')); });
+        document.getElementById('search-input').addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); const rows = traineesList.getElementsByTagName('tr'); Array.from(rows).forEach(row => { const name = row.cells[0].textContent.toLowerCase(); const phone = row.cells[1].textContent.toLowerCase(); row.style.display = name.includes(searchTerm) || phone.includes(searchTerm) ? '' : 'none'; }); });
+        document.getElementById('export-btn').addEventListener('click', () => { let csv = '\ufeffالاسم,رقم الجوال,الدورة,تاريخ التسجيل,تاريخ الملاحظة,الملاحظات,الحالة\n'; allTrainees.forEach(t => { csv += `"${t.name}","${t.phone}","${t.courseName}","${t.registrationDate}","${t.taskDate || ''}","${t.notes || ''}","${t.isCompleted ? 'منجزة' : 'معلقة'}"\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `trainees_${new Date().toISOString().slice(0, 10)}.csv`; link.click(); showNotification('تم تصدير الملف!'); });
     });
     </script>
 </body>
